@@ -2,13 +2,14 @@
 
 namespace App\Http\Controllers;
 
+use JWTAuth;
 use Illuminate\Http\Request;
 use Tymon\JWTAuth\Exceptions\JWTException;
-use JWTAuth;
 
 class ApiAuthController extends Controller
 {
-  public function userAuth(Request $request)
+
+  public function authenticate(Request $request)
   {
     $token = null;
     try
@@ -19,12 +20,21 @@ class ApiAuthController extends Controller
       {
         return response()->json(['error' => 'invalid_credentials'], 500);
       }
+      else
+      {
+        $user = JWTAuth::toUser($token);
+        $userInformation = $user->attributesToArray();
+        $username = $userInformation['name'];
+      }
+
+      $loginInformation = array('token' => $token, 'name' => $username);
     }
     catch(JWTException $exception)
     {
       return response()->json(['error' => $exception->getMessage()], 500);
     }
 
-    return response()->json(compact('token'));
+    return response()->json(compact('loginInformation'));
   }
+
 }

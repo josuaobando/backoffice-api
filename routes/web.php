@@ -16,5 +16,5 @@ Route::get('/', function () {
 });
 
 Route::group(['middleware' => 'cors'], function(){
-  Route::post('/auth_login', 'ApiAuthController@userAuth');
+  Route::post('/authenticate', 'ApiAuthController@authenticate');
 });

@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 class Transaction extends Model
 {
   protected $table = 'sbTransaction';
-  protected $id='sbTransaction_id';
+  protected $id = 'sbTransaction_id';
 
   /**
    * The attributes that are mass assignable.

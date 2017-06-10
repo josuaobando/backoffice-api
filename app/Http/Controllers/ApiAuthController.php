@@ -12,29 +12,34 @@ class ApiAuthController extends Controller
   public function authenticate(Request $request)
   {
     $token = null;
-    try
-    {
+    try{
       $credentials = $request->only('email', 'password');
       $token = JWTAuth::attempt($credentials);
-      if(!$token)
-      {
+      if(!$token){
         return response()->json(['error' => 'invalid_credentials'], 500);
-      }
-      else
-      {
+      }else{
         $user = JWTAuth::toUser($token);
         $userInformation = $user->attributesToArray();
         $username = $userInformation['name'];
       }
 
       $loginInformation = array('token' => $token, 'name' => $username);
-    }
-    catch(JWTException $exception)
-    {
+    }catch(JWTException $exception){
       return response()->json(['error' => $exception->getMessage()], 500);
     }
 
     return response()->json(compact('loginInformation'));
+  }
+
+  public function logout(Request $request)
+  {
+    $this->validate($request, [
+      'token' => 'required'
+    ]);
+
+    $logout = JWTAuth::invalidate($request->input('token'));
+
+    return response()->json(compact('logout'));
   }
 
 }

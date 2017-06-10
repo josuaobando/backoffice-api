@@ -11,11 +11,17 @@
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
+Route::get('/', function(){
+  return view('welcome');
 });
 
-Route::group(['middleware' => 'cors'], function(){
+Route::group(['middleware' => ['api', 'cors'], 'prefix' => 'api'], function(){
+
   Route::post('/authenticate', 'ApiAuthController@authenticate');
-  Route::post('/report', 'ApiReportController@report');
+
+  Route::group(['middleware' => 'jwt-auth', 'jwt.refresh'], function(){
+    Route::post('/logout', 'ApiAuthController@logout');
+    Route::post('/report', 'ApiReportController@report');
+  });
+
 });
